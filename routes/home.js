@@ -28,6 +28,32 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.patch("/:id", (req, res) => {
+  connection
+    .promise()
+    .query("SELECT * FROM characters WHERE id = ?", [req.params.id])
+    .then(([results]) => {
+      existingCharacter = results[0];
+      if (!existingCharacter) return Promise.reject("RECORD_NOT_FOUND");
+      return connection
+        .promise()
+        .query("UPDATE characters SET ? WHERE id = ?", [
+          req.body,
+          req.params.id,
+        ]);
+    })
+    .then(() => {
+      res.json({ ...existingCharacter, ...req.body });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err === "RECORD_NOT_FOUND") {
+        return res.sendStatus(404);
+      }
+      res.sendStatus(500);
+    });
+});
+
 router.delete("/:id", (req, res) => {
   connection
     .promise()

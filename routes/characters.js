@@ -31,13 +31,17 @@ router.post("/", (req, res) => {
   });
 });
 
-/*router.patch("/characters/:id", (req, res) => {
+router.patch("/characters/:id", (req, res) => {
   connection
     .promise()
     .query("UPDATE characters SET ? WHERE id = ?", [req.body, req.params.id])
     .then(([result]) => {
       res.sendStatus(200);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
     });
-});*/
+});
 
 module.exports = router;
